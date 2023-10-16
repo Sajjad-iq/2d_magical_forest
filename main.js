@@ -30,7 +30,7 @@ window.addEventListener("mousemove", function (e) {
   character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr)
 })
 //for touch screen
-window.addEventListener("mousemove", function (e) {
+window.addEventListener("touchmove", function (e) {
   character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr)
 })
 
