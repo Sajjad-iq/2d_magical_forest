@@ -23,21 +23,27 @@ const layer6 = new layer(backGroundLayer6, 0.1, ctx, backgroundSpeed) // ground 
 const layer7 = new layer(backGroundLayer7, 0.8, ctx, backgroundSpeed) // clouds 2
 const layer8 = new layer(backGroundLayer8, 0.4, ctx, backgroundSpeed) // clouds 1
 
-let character = new Character(ctx, 0, 0, options["idle"].ImagesArr)
+let character = new Character(ctx, 0, 0, options["idle"].ImagesArr, false)
+let lose = character.lose
 
 //for mouse
 window.addEventListener("mousemove", function (e) {
-  character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr)
+  if (!character.lose) character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr, lose)
 })
 //for touch screen
 window.addEventListener("touchmove", function (e) {
-  character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr)
+  if (!character.lose) character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["idle"].ImagesArr, lose)
+
 })
+
+
+// for magic spell
 
 let BulletsArr = []
 window.addEventListener("click", async function (e) {
+  lose = false
   let MagicAttackSound = new Audio("Fireball-Magic-Attack-A-www.fesliyanstudios.com.mp3")
-  character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["attack"].ImagesArr)
+  character = new Character(ctx, e.x - canvasPosition.left - character.width / 2, e.y - canvasPosition.top - character.height / 2, options["attack"].ImagesArr, lose)
   BulletsArr.push(new Bullet(ctx, e.y - canvasPosition.top - 256 / 2, e.x - canvasPosition.left + character.width / 4, canvas.width, options["magAttack"].ImagesArr))
   MagicAttackSound.play()
 })
@@ -45,11 +51,15 @@ window.addEventListener("click", async function (e) {
 
 
 let EnemiesArr = []
-let TimeToNextEnemy = 1000
-let EnemyInterval = 1000
+let TimeToNextEnemy = 500
+let EnemyInterval = 500
 let LastTime = 0
+let score = 0
+const ScoreFlag = document.getElementById("score")
+const loseWindow = document.getElementById("lose-window")
 
 function animate(timestamp) {
+
 
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
@@ -78,21 +88,32 @@ function animate(timestamp) {
   layer4.draw()
 
 
-  EnemiesArr.forEach(enemy => {
-    enemy.update()
-    enemy.draw()
-  })
 
 
   // character layer
   character.update()
   character.draw()
 
-  // bullets
-  BulletsArr.forEach(e => {
-    e.update()
-    e.draw()
-  })
+  if (!character.lose) {
+    loseWindow.style.display = "none"
+    // bullets
+    BulletsArr.forEach(e => {
+      e.update()
+      e.draw()
+    })
+    EnemiesArr.forEach(enemy => {
+      enemy.update()
+      enemy.draw()
+    })
+
+  }
+  else {
+    loseWindow.style.display = "flex"
+    score = 0
+  }
+
+
+
 
   EnemiesArr.forEach(enemy => {
     BulletsArr.forEach(bullet => {
@@ -102,8 +123,22 @@ function animate(timestamp) {
         bullet.y + bullet.height / 2 > enemy.y) {
         enemy.killed = true
         enemy.CharacterImages = options["enemyDies"].ImagesArr
+        score++
+        ScoreFlag.innerText = score
       }
     })
+
+
+    if (character.x < enemy.x + enemy.width / 2 &&
+      character.x + character.width / 2 > enemy.x &&
+      character.y < enemy.y + enemy.height / 2 &&
+      character.y + character.height / 2 > enemy.y) {
+
+      character.lose = true
+      character.CharacterImages = options["characterDies"].ImagesArr
+    }
+
+
   })
 
 
@@ -113,6 +148,7 @@ function animate(timestamp) {
 
   requestAnimationFrame(animate)
 }
+
 
 animate()
 

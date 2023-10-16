@@ -15,7 +15,7 @@ export class Enemy {
         this.CharacterImages = CharacterImages
         this.CanvasWidth = CanvasWidth
         this.markedForDeletion = false
-        this.MoveSpeed = Math.random() * 8
+        this.MoveSpeed = Math.random() * 15
         this.health = 3
         this.CanvasHeight = CanvasHeight
         this.killed = killed

@@ -1,6 +1,6 @@
 
 export class Character {
-    constructor(ctx, x, y, CharacterImages = []) {
+    constructor(ctx, x, y, CharacterImages = [], lose) {
         this.x = x
         this.y = y
         this.image = new Image()
@@ -13,11 +13,13 @@ export class Character {
         this.flapSpeed = 5
         this.gameFrame = 0
         this.CharacterImages = CharacterImages
+        this.lose = lose
     }
 
     update() {
         if (this.gameFrame % this.flapSpeed === 0) {
-            this.FrameX >= this.CharacterImages.length - 1 ? this.FrameX = 0 : this.FrameX++
+            if (this.lose) this.FrameX >= this.CharacterImages.length - 1 ? this.FrameX = 6 : this.FrameX++
+            else this.FrameX >= this.CharacterImages.length - 1 ? this.FrameX = 0 : this.FrameX++
         }
         this.gameFrame++
     }
