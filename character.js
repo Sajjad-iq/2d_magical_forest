@@ -10,7 +10,7 @@ export class Character {
         this.height = this.spriteHeight * 1.1
         this.ctx = ctx
         this.FrameX = 0
-        this.flapSpeed = 5
+        this.flapSpeed = 10
         this.gameFrame = 0
         this.CharacterImages = CharacterImages
         this.lose = lose

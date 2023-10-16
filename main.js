@@ -67,10 +67,7 @@ function animate(timestamp) {
   LastTime = timestamp
   TimeToNextEnemy += deltaTime
 
-  if (TimeToNextEnemy > EnemyInterval) {
-    EnemiesArr.push(new Enemy(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, options["enemies"].ImagesArr, false))
-    TimeToNextEnemy = 0
-  }
+
 
   // background layer
   layer1.draw()
@@ -87,15 +84,17 @@ function animate(timestamp) {
   layer4.update()
   layer4.draw()
 
-
-
-
   // character layer
   character.update()
   character.draw()
 
   if (!character.lose) {
     loseWindow.style.display = "none"
+
+    if (TimeToNextEnemy > EnemyInterval) {
+      EnemiesArr.push(new Enemy(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, options["enemies"].ImagesArr, false))
+      TimeToNextEnemy = 0
+    }
     // bullets
     BulletsArr.forEach(e => {
       e.update()
@@ -110,9 +109,9 @@ function animate(timestamp) {
   else {
     loseWindow.style.display = "flex"
     score = 0
+    ScoreFlag.innerText = score
+
   }
-
-
 
 
   EnemiesArr.forEach(enemy => {
